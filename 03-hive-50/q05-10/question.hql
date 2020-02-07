@@ -40,3 +40,12 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS thive5;
+CREATE TABLE thive5 AS 
+SELECT YEAR(c4) AS ano, c0 FROM tbl0
+LATERAL VIEW explode(c5) c4 AS c0;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+(SELECT ano, c0, COUNT(c0) FROM thive5
+GROUP BY ano, c0
+ORDER BY ano, c0);

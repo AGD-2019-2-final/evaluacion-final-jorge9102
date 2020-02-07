@@ -41,3 +41,22 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 
 
+DROP TABLE IF EXISTS data;
+
+CREATE TABLE data
+AS
+    SELECT split(concat_ws(':',c5),',')
+    FROM(
+        SELECT
+            c1, COLLECT_LIST(UPPER(c5)) c5
+            FROM
+            tbl0 LATERAL VIEW explode(c5) tbl0 AS c5
+            GROUP BY C1
+        ) t0
+;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT
+    *
+FROM
+    data;

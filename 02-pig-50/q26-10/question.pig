@@ -27,3 +27,15 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+lines = LOAD '*.csv' USING PigStorage(',') AS 
+(id:INT,
+nombre:CHARARRAY,
+apellido:CHARARRAY,
+fecha:CHARARRAY,
+color:CHARARRAY,
+valor:INT);
+
+y = FOREACH lines GENERATE nombre, LOWER(SUBSTRING(nombre,0,1)) as inicial;
+u = FILTER y BY inicial >= 'm';
+z = FOREACH u GENERATE nombre;
+STORE z INTO 'output' USING PigStorage(' ');

@@ -33,3 +33,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+apellidos = FOREACH datos GENERATE apellido, SUBSTRING($2,0,1) as letra;
+filtro = FILTER apellidos BY letra >= 'D' and letra <= 'K';
+
+final = FOREACH filtro GENERATE apellido;
+
+store final into 'output' USING PigStorage (' ');

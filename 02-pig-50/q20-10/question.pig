@@ -28,3 +28,15 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+lines = LOAD '*.csv' USING PigStorage(',') AS 
+(id:INT,
+nombre:CHARARRAY,
+apellido:CHARARRAY,
+fecha:CHARARRAY,
+color:CHARARRAY,
+valor:INT);
+
+y= FOREACH lines GENERATE nombre,color;
+u= FILTER y BY  NOT STARTSWITH(color,'b');
+
+STORE u INTO 'output' USING PigStorage(',');
